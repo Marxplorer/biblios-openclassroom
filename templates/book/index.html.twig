@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% block title %}Catalogue des livres{% endblock %}
+{% block body %}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Catalogue des livres</h1>
+    <div class="row">
+        {% for book in pager %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        {% if book.coverImage %}
+                            <img
+                                src="{{ asset('uploads/covers/' ~ book.coverImage) }}"
+                                class="card-img-top"
+                                alt="{{ book.title }}"
+                            >
+                        {% endif %}
+                        <h5 class="card-title">
+                            <a href="{{ path('app_book_show', {id: book.id}) }}">
+                                {{ book.title }}
+                            </a>
+                        </h5>
+                        <p class="card-text">
+                            <strong>ISBN :</strong> {{ book.isbn }}
+                        </p>
+                        <p class="card-text">
+                            <strong>Éditeur :</strong>
+                            {{ book.editor ? book.editor.name : 'Non défini' }}
+                        </p>
+                        <p class="card-text">
+                            <strong>Auteur(s) :</strong>
+                            {% for author in book.authors %}
+                                {{ author.name }}{% if not loop.last %}, {% endif %}
+                            {% else %}
+                                Aucun auteur
+                            {% endfor %}
+                        </p>
+                        <p class="card-text">
+                            <strong>Pages :</strong> {{ book.pageNumber }}
+                        </p>
+                        <p class="card-text">
+                            <strong>Date :</strong>
+                            {{ book.editedAt ? book.editedAt|date('d/m/Y') : '-' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    Aucun livre disponible.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mt-4">
+    {{ pagerfanta(pager) }}
+</div>
+
+{% endblock %}
